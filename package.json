@@ -1,0 +1,12 @@
+{
+	"name": "Lonely Planet Coding Exercise",
+	"version": "1.0",
+	"description": "An attempt to join the elite coders at LP Footscray",
+	"main": "lonely-planet.js",
+	"keywords": ["concise","elegant","simple","effective","efficient","robust","extensible"],
+	"author": "Adel Smee",
+	"homepage": "index.html",
+	"dependencies": ["jquery", "xml2js"],
+	"scripts": {"test":"planet_test.js"},
+	"repository": {"type": "git", "url": ""}
+}
