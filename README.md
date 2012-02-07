@@ -5,4 +5,4 @@ Run the application in Node.js through bin/lonely-planet.js followed by the rela
 
 E.g.
 
-node bin/lonely-planet.js taxonomy.xml destinations.xml /Applications/XAMPP/xamppfiles/htdocs/planet
+node bin/lonely-planet.js data/taxonomy.xml data/destinations.xml /Applications/XAMPP/xamppfiles/htdocs/planet
