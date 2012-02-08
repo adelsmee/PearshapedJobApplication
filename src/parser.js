@@ -43,7 +43,6 @@ function newParser(taxonomyXml, destinationsXml) {
 				numberOfObjectsToConvert--;
 			}
 		}
-console.log('added dest: ' + nextDestination.title);
 
 		if(numberOfObjectsToConvert === 0) {
 			sendResponse(destinations);
