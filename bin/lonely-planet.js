@@ -4,13 +4,12 @@
 // The  New Planet module that encapsulates this application.
 function newPlanet() {
 	// Includes
-	var newParser = require('../lib/parser.js'),
+	var newParser = require('../src/parser.js'),
 	// Arguments: taxonomy file, destination file, output directory
 	// Ignore first two arguments as they are loc of node and current file
 		planetArgs = process.argv.splice(2);
 
 	return {
-		
 		parseXML: function(){
 			var parser = newParser(planetArgs[0], planetArgs[1]);
 			parser.parseXml2Html();
