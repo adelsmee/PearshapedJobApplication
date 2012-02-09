@@ -2,10 +2,10 @@
 // (c) 2012 Adel Smee, Pearshaped Development Inc.
 
 // The Parser that reads raw XML in from a file and produces HTML files.
-function newParser(taxonomyXml, destinationsXml) {
+function newParser(taxonomyXml, destinationsXml, outputDir) {
 	var fs = require('fs'),
 		xml2js = require('xml2js'),
-		siteMaker = require('./pageMaker.js'),
+		newPageMaker = require('./pageMaker.js'),
 		newUtility = require('./utility.js'),
 		utility = newUtility();
 		nextDestination = {},
@@ -73,22 +73,28 @@ function newParser(taxonomyXml, destinationsXml) {
 			if(typeof nextPropertyValue === 'object') {
 				// If it is a node then add its data to the appropriate destination
 				if(nextPropertyValue.atlas_node_id) {
-					var addToDestination = destinations[nextPropertyValue.atlas_node_id];
+					var addToDestination = destinations[nextPropertyValue.atlas_node_id],
+						parentDestination = parent_id ? destinations[parent_id] : null,
+						parentTitle = (parentDestination ? parentDestination.title : 'World');
 
 					// Add parent id to current destination
 					if(addToDestination) {						
-						addToDestination.parent_id = parent_id ? parent_id : 'World';
-//console.log('added parent id to: ' + addToDestination.title);
+						addToDestination.parentDestination = { 
+												parent_id: (parent_id ? parent_id : 'World'),
+												title: parentTitle
+											}
+//console.log('added parent: ' + parentTitle + ' to: ' + addToDestination.title);
 					}
 					
-					// Add child id to parent destination
-					if(parent_id) {
-						var addToParentDestination = destinations[parent_id];
-						if(addToParentDestination) {
-							// Initialize childIds array if not created yet.
-							addToParentDestination.childIds = addToParentDestination.childIds ? addToParentDestination.childIds : [];
-							addToParentDestination.childIds.push(nextPropertyValue.atlas_node_id);
-						}
+					// Add child to parent destination
+					if(parentDestination) {
+						// Initialize children array if not created yet.
+						parentDestination.children = parentDestination.children ? parentDestination.children : [];
+						parentDestination.children.push({
+												atlas_id: nextPropertyValue.atlas_node_id,
+												title: addToDestination.title
+											});
+//console.log('added child: ' + addToDestination.title + ' to: ' + parentTitle);
 					}
 				}
 						
@@ -159,8 +165,12 @@ function newParser(taxonomyXml, destinationsXml) {
 		parseXml2Html: function() {
 			parseDestinations(function(destinations) {
 				// Add taxonomies to destination objects
-				parseTaxonomies(function() {
-					// Create website
+				parseTaxonomies(function(completedDestinations) {
+					pageMaker = newPageMaker(outputDir);
+					for (name in completedDestinations) {
+						pageMaker.makeDestinationPage(completedDestinations[name]);
+//						return;
+					}
 				});
 			});
 		},

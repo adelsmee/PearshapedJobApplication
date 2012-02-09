@@ -6,7 +6,7 @@ describe('Parser', function () {
 	var parser, utility, destinations, getDestinations;
 
 	beforeEach(function() {
-		parser = newParser('data/taxonomy.xml', 'data/destinations.xml');
+		parser = newParser('data/taxonomy.xml', 'data/destinations.xml', 'testwastage/');
 		utility = newUtility();
 	
 		getDestinations = function(testDestinations) {
@@ -58,7 +58,8 @@ describe('Parser', function () {
 			expect(destinations['355064']).toBeDefined();
 			var name;
 			for (name in destinations) {
-				expect(destinations[name].parent_id).toBeDefined();  
+				expect(destinations[name].parentDestination.parent_id).toBeDefined();  
+				expect(destinations[name].parentDestination.title).toBeDefined();  
 			}
 		});
 	});

@@ -6,7 +6,7 @@
 	"keywords": ["concise","elegant","simple","effective","efficient","robust","extensible"],
 	"author": "Adel Smee",
 	"homepage": "index.html",
-	"dependencies": ["jquery", "xml2js"],
+	"dependencies": ["jquery", "xml2js", "docpad"],
 	"scripts": {"test":"planet_test.js"},
 	"repository": {"type": "git", "url": ""}
 }

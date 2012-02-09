@@ -11,7 +11,7 @@ function newPlanet() {
 
 	return {
 		parseXML: function(){
-			var parser = newParser(planetArgs[0], planetArgs[1]);
+			var parser = newParser(planetArgs[0], planetArgs[1], planetArgs[2]);
 			parser.parseXml2Html();
 		}
 
