@@ -1,7 +1,7 @@
 // Lonely-Planet.js 1.0
 // (c) 2012 Adel Smee, Pearshaped Development Inc.
 
-// The  New Planet module that encapsulates this application.
+// The  Planet module that encapsulates this application.
 function newPlanet() {
 	// Includes
 	var newParser = require('../src/parser.js'),

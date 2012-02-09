@@ -4,13 +4,9 @@ function newUtility() {
 
 	var ignorePropertyNames = {
 		asset_id: 'n',
-		titleascii: 'n'
-	};
-
-	var propertyNameMap = {
-			atlas_id: 'atlasId',
-			parent_id: 'parentId',
-			atlas_node_id: 'atlasId'	
+		titleascii: 'n',
+		destination: 'n',
+		'@': 'n'
 	};
 
 	function isArray(obj) {
@@ -26,9 +22,6 @@ function newUtility() {
 
 		getIgnorePropertyNames: function() {
 			return ignorePropertyNames;
-		},
-		getPropertyNameMap: function() {
-			return propertyNameMap;
 		},
 		isArray: function(obj) {
 			return isArray(obj);
