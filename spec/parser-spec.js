@@ -26,6 +26,18 @@ describe('Parser', function () {
 	  expect(parser.parseTaxonomy()).toEqual();  
 	});
 
+	it('should parse all taxonomies', function() {
+		
+	});
+
+	it('should handle unknown taxonomy file', function() {
+		
+	});
+
+	it('should handle unknown destinations file', function() {
+		
+	});
+
 	it('should parse all destinations', function () {
 		parser.parseDestinations(getDestinations);
 		waitsFor(function() {
