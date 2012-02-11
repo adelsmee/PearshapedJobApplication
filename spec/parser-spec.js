@@ -6,7 +6,7 @@ describe('Parser', function () {
 	var parser, utility, destinations, getDestinations;
 
 	beforeEach(function() {
-		parser = newParser('data/taxonomy.xml', 'data/destinations.xml', 'testwastage/');
+		parser = newParser('data/bigger-taxonomy.xml', 'data/bigger-destinations.xml', 'testwastage/');
 		utility = newUtility();
 	
 		getDestinations = function(testDestinations) {
@@ -35,14 +35,14 @@ describe('Parser', function () {
 
 		runs(function() {
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			var name, counter = 0;
 			for (name in destinations) {
 				if(destinations.hasOwnProperty(name)) {
 					counter++;
 				}
 			}
-			expect(counter).toBe(24);  
+			expect(counter).toBe(124);  
 		});
 	});
 
@@ -55,7 +55,7 @@ describe('Parser', function () {
 
 		runs(function() {
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			var name;
 			for (name in destinations) {
 				expect(destinations[name].parentDestination.parent_id).toBeDefined();  
@@ -94,14 +94,14 @@ describe('Parser', function () {
 
 		runs(function() {
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			var name, counter = 0;
 			for (name in destinations) {
 				if(destinations.hasOwnProperty(name)) {
 					counter++;
 				}
 			}
-			expect(counter).toBe(24);  
+			expect(counter).toBe(124);  
 		});
 	});  
 
@@ -115,7 +115,7 @@ describe('Parser', function () {
 		runs(function() {
 			var name;
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			for (name in destinations) {
 				expect(destinations[name].atlas_id).toBeDefined();  
 			}
@@ -132,7 +132,7 @@ describe('Parser', function () {
 		runs(function() {
 			var name;
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			for (name in destinations) {
 				var ignoreProperties;
 				for (ignoreProperties in utility.getIgnorePropertyNames()) {
@@ -147,8 +147,8 @@ describe('Parser', function () {
 		parser.parseDestinations(getDestinations);
 
 		// Only include first-level under destination
-		var propertyNames = ['atlas_id', 'title', 'history', 'introductory', 'practical_information', 'transport', 'weather', 'work_live_study'];
-		 
+		var propertyNames = ['atlas_id', 'title', 'contents'];
+		var contentsPropertyNames = ['history', 'introductory', 'practical_information', 'transport', 'weather', 'work_live_study']; 
 
 		waitsFor(function() {
 			return parser.getAllDestinationsConverted();
@@ -157,11 +157,19 @@ describe('Parser', function () {
 		runs(function() {
 			var name;
 			// Check destinations is populated by looking for Africa
-			expect(destinations['355064']).toBeDefined();
+			expect(destinations['355633']).toBeDefined();
 			for (name in destinations) {
 				// Just test Africa then return as not all the rest have all these properties
 				for (i = 0 ; i < propertyNames.length ; i++) {
-					expect(destinations[name][propertyNames[i]]).toBeDefined();
+					// if(propertyNames[i] === 'contents') {
+					// 	var j;
+					// 	for (j = 0 ; j < contentsPropertyNames.length ; j++)
+					// 	{
+					// 		expect(destinations[name][propertyNames[i]][contentsPropertyNames[j]]).toBeDefined();
+					// 	}
+					// } else {
+						expect(destinations[name][propertyNames[i]]).toBeDefined();
+					// }
 				}
 				return;
 			}

@@ -28,6 +28,7 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 				// If property name is atlas_id we are on to the next object in the tree
 				// so store the last one in the destinations object.
 				if(propertyName === 'atlas_id' && nextDestination.atlas_id){
+
 					destinations[nextDestination.atlas_id] = nextDestination;
 //console.log('next dest converted: ' + nextDestination.title);
 //counter++;
@@ -35,8 +36,21 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 				}
 				
 				// Ignore array elements as they will be stored in their respective objects
-				if(isNaN(propertyName)){				
-					nextDestination[propertyName] = nextPropertyValue;
+				if(isNaN(propertyName)){
+					// Store contents
+					if(propertyName !== 'atlas_id' && propertyName !== 'title') {
+						nextDestination.contents = nextDestination.contents ? nextDestination.contents : [];
+						var contentObject = {};
+						// Clean up that introductory silly name
+						propertyName = (propertyName === 'introductory') ? 'introduction' : propertyName;
+
+						contentObject[propertyName] = nextPropertyValue;
+						nextDestination.contents.push(contentObject);
+					}				
+					else {
+						// Store metadata
+						nextDestination[propertyName] = nextPropertyValue;
+					}
 				}	
 			}
 
@@ -51,7 +65,8 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 		}
 
 		if(numberOfObjectsToConvert === 0) {
-			// Catch the last destination
+			// Store the last destination
+console.log('converted destinations: ' + 	destinations.length);
 			destinations[nextDestination.atlas_id] = nextDestination;
 			allDestinationsConverted = true;
 //console.log('responding with destinations: ' + counter);
@@ -75,12 +90,12 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 				if(nextPropertyValue.atlas_node_id) {
 					var addToDestination = destinations[nextPropertyValue.atlas_node_id],
 						parentDestination = parent_id ? destinations[parent_id] : null,
-						parentTitle = (parentDestination ? parentDestination.title : 'World');
+						parentTitle = (parentDestination ? parentDestination.title : null);
 
 					// Add parent id to current destination
 					if(addToDestination) {						
 						addToDestination.parentDestination = { 
-												parent_id: (parent_id ? parent_id : 'World'),
+												parent_id: parent_id,
 												title: parentTitle
 											}
 //console.log('added parent: ' + parentTitle + ' to: ' + addToDestination.title);
@@ -117,6 +132,7 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 		}
 	}
 
+
 	function parseTaxonomies(sendResponse) {
 		var parser = new xml2js.Parser();
 		console.log('Trying to parse taxonomy file: ' + taxonomyXml);
@@ -141,16 +157,16 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 	function parseDestinations(sendResponse) {
 		var parser = new xml2js.Parser();
 		console.log('Trying to parse destinations file: ' + destinationsXml);
-
 		fs.readFile(destinationsXml, function(err, data) {
 			if(err){
 				console.error('Destinations file error: ' + err);
 				throw new Error('Unable to find file: ' + destinationsXml); 
 			} else if(data.length > 0) {
-    			// Parse the XML into JS objects
+  			// Parse the XML into JS objects
 				parser.parseString(data, function(err, result) {
 					if(err) {
 	                	console.error(err);
+						throw new Error('Unable to parse file: ' + destinationsXml); 
 	        		} else if(data.length > 0){
 						convertJsObjectsToDestinations(result, sendResponse);	
 					}
@@ -169,7 +185,6 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 					pageMaker = newPageMaker(outputDir);
 					for (name in completedDestinations) {
 						pageMaker.makeDestinationPage(completedDestinations[name]);
-//						return;
 					}
 				});
 			});
