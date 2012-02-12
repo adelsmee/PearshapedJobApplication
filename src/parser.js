@@ -7,14 +7,14 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 		xml2js = require('xml2js'),
 		newPageMaker = require('./pageMaker.js'),
 		newUtility = require('./utility.js'),
-		utility = newUtility();
+		utility = newUtility(),
 		nextDestination = {},
 		destinations = {},
 		numberOfObjectsToConvert = 0,
 		allDestinationsConverted = false,
 		allTaxonomiesAdded = false,
 		ignorePropertyNames = utility.getIgnorePropertyNames();
-//var counter = 0;
+
 	function convertJsObjectsToDestinations(objectsToConvert, sendResponse) {
 		var name;
 
@@ -30,8 +30,6 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 				if(propertyName === 'atlas_id' && nextDestination.atlas_id){
 
 					destinations[nextDestination.atlas_id] = nextDestination;
-//console.log('next dest converted: ' + nextDestination.title);
-//counter++;
 					nextDestination = {};
 				}
 				
@@ -66,12 +64,11 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 
 		if(numberOfObjectsToConvert === 0) {
 			// Store the last destination
-console.log('converted destinations: ' + 	destinations.length);
 			destinations[nextDestination.atlas_id] = nextDestination;
-			allDestinationsConverted = true;
-//console.log('responding with destinations: ' + counter);
+			console.log('Destinations parsed to js objects');	
+			// For testing
 			sendResponse(destinations);
-			console.log('Done Destinations');	
+			allDestinationsConverted = true;
 		}
 	}	
 
@@ -95,10 +92,9 @@ console.log('converted destinations: ' + 	destinations.length);
 					// Add parent id to current destination
 					if(addToDestination) {						
 						addToDestination.parentDestination = { 
-												parent_id: parent_id,
-												title: parentTitle
-											}
-//console.log('added parent: ' + parentTitle + ' to: ' + addToDestination.title);
+							parent_id: parent_id,
+							title: parentTitle
+						}
 					}
 					
 					// Add child to parent destination
@@ -106,10 +102,9 @@ console.log('converted destinations: ' + 	destinations.length);
 						// Initialize children array if not created yet.
 						parentDestination.children = parentDestination.children ? parentDestination.children : [];
 						parentDestination.children.push({
-												atlas_id: nextPropertyValue.atlas_node_id,
-												title: addToDestination.title
-											});
-//console.log('added child: ' + addToDestination.title + ' to: ' + parentTitle);
+							atlas_id: nextPropertyValue.atlas_node_id,
+							title: addToDestination.title
+						});
 					}
 				}
 						
@@ -126,16 +121,17 @@ console.log('converted destinations: ' + 	destinations.length);
 		}
 
 		if(numberOfObjectsToConvert === 0) {
-			allTaxonomiesAdded = true;
+			console.log('Taxonomy parsed to js objects');	
+			// For testing
 			sendResponse(destinations);
-			console.log('Done Taxonomy');	
+			allTaxonomiesAdded = true;
 		}
 	}
 
 
 	function parseTaxonomies(sendResponse) {
 		var parser = new xml2js.Parser();
-		console.log('Trying to parse taxonomy file: ' + taxonomyXml);
+		console.log('Trying to parse taxonomy file to js objects: ' + taxonomyXml);
 		
 		fs.readFile(taxonomyXml, function(err, data) {
 			if(err) {
@@ -156,7 +152,7 @@ console.log('converted destinations: ' + 	destinations.length);
 
 	function parseDestinations(sendResponse) {
 		var parser = new xml2js.Parser();
-		console.log('Trying to parse destinations file: ' + destinationsXml);
+		console.log('Trying to parse destinations file to js objects: ' + destinationsXml);
 		fs.readFile(destinationsXml, function(err, data) {
 			if(err){
 				console.error('Destinations file error: ' + err);
@@ -179,13 +175,20 @@ console.log('converted destinations: ' + 	destinations.length);
 
 		// Public function
 		parseXml2Html: function() {
+			var startDate = new Date();
+			console.log('Parsing started: ' + startDate);
+			console.log();
 			parseDestinations(function(destinations) {
 				// Add taxonomies to destination objects
 				parseTaxonomies(function(completedDestinations) {
 					pageMaker = newPageMaker(outputDir);
-					for (name in completedDestinations) {
-						pageMaker.makeDestinationPage(completedDestinations[name]);
-					}
+					pageMaker.makeDestinationPages(completedDestinations, function(finished){
+						while(!finished){};
+						var endDate = new Date();
+						console.log();
+						console.log('Parsing ended: ' + endDate);
+						console.log('Time taken in ms: ' + (new Date(endDate - startDate).getMilliseconds()));
+					});
 				});
 			});
 		},

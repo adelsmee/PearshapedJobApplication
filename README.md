@@ -1,7 +1,10 @@
-This is my attempt at parsing the Lonely Planet XML into a series of web pages. I've used JavaScript running on 
-Node.js for the server-side processing.
+This is my attempt at parsing the Lonely Planet XML into a series of web pages. I've used JavaScript running on Node.js for server-side processing.
 
-Run the application in Node.js through bin/lonely-planet.js followed by the relative location of the taxonomy file, the destinations file and the output folder where you would like your site to be created.
+To run from the command line cd to the root directory of the application:
+
+node bin/lonely-planet.js <taxonomyfile> <destinationfile> <outputdirectory>
+
+* All paths should be relative to the root directory of the application.
 
 E.g.
 

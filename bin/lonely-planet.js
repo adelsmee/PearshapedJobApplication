@@ -7,7 +7,7 @@ function newPlanet() {
 	var newParser = require('../src/parser.js'),
 	// Arguments: taxonomy file, destination file, output directory
 	// Ignore first two arguments as they are loc of node and current file
-		planetArgs = process.argv.splice(2);
+	planetArgs = process.argv.splice(2);
 
 	return {
 		parseXML: function(){

@@ -6,7 +6,7 @@ describe('Parser', function () {
 	var parser, utility, destinations, getDestinations;
 
 	beforeEach(function() {
-		parser = newParser('data/bigger-taxonomy.xml', 'data/bigger-destinations.xml', 'testwastage/');
+		parser = newParser('data/taxonomy.xml', 'data/destinations.xml', 'testwastage/');
 		utility = newUtility();
 	
 		getDestinations = function(testDestinations) {
@@ -42,7 +42,7 @@ describe('Parser', function () {
 					counter++;
 				}
 			}
-			expect(counter).toBe(124);  
+			expect(counter).toBe(24);  
 		});
 	});
 
@@ -101,7 +101,7 @@ describe('Parser', function () {
 					counter++;
 				}
 			}
-			expect(counter).toBe(124);  
+			expect(counter).toBe(24);  
 		});
 	});  
 
@@ -119,6 +119,7 @@ describe('Parser', function () {
 			for (name in destinations) {
 				expect(destinations[name].atlas_id).toBeDefined();  
 			}
+console.log(JSON.stringify(destinations));
 		});
 	});  
 
