@@ -2,18 +2,16 @@
 // (c) 2012 Adel Smee, Pearshaped Development Inc.
 
 // The Parser that reads raw XML in from a file and produces HTML files.
-function newParser(taxonomyXml, destinationsXml, outputDir) {
-	var fs = require('fs'),
-		xml2js = require('xml2js'),
-		newPageMaker = require('./pageMaker.js'),
-		newUtility = require('./utility.js'),
-		utility = newUtility(),
+function newParser(xmlRepository, pageMaker) {
+	var xml2js = require('xml2js'),
+		util = require('util'),
+		config = require('./config.js'),
 		nextDestination = {},
 		destinations = {},
 		numberOfObjectsToConvert = 0,
 		allDestinationsConverted = false,
 		allTaxonomiesAdded = false,
-		ignorePropertyNames = utility.getIgnorePropertyNames();
+		ignorePropertyNames = config.xml.ignorePropertyNames;
 
 	function convertJsObjectsToDestinations(objectsToConvert, sendResponse) {
 		var name;
@@ -54,7 +52,7 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 
 			// If value is an object then don't recurse any further.
 			// But continue to recurse for arrays and attributes.
-			if(utility.isArray(nextPropertyValue) || nextPropertyValue['@'] || nextPropertyValue['atlas_id'] || !typeof nextPropertyValue === 'object') {
+			if(util.isArray(nextPropertyValue) || nextPropertyValue['@'] || nextPropertyValue['atlas_id'] || !typeof nextPropertyValue === 'object') {
 				// Count up and down the recursive tree so we can let others know when the parsing is done
 				numberOfObjectsToConvert++;
 				convertJsObjectsToDestinations(nextPropertyValue, sendResponse);
@@ -96,9 +94,9 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 							title: parentTitle
 						}
 					}
-					
+
 					// Add child to parent destination
-					if(parentDestination) {
+					if(parentDestination && (parentDestination.title !== addToDestination.title)) {
 						// Initialize children array if not created yet.
 						parentDestination.children = parentDestination.children ? parentDestination.children : [];
 						parentDestination.children.push({
@@ -131,41 +129,36 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 
 	function parseTaxonomies(sendResponse) {
 		var parser = new xml2js.Parser();
-		console.log('Trying to parse taxonomy file to js objects: ' + taxonomyXml);
-		
-		fs.readFile(taxonomyXml, function(err, data) {
-			if(err) {
-		        console.error('Taxonomies file error: ' + err);
-				throw new Error('Unable to find file: ' + taxonomyXml); 
-    		} else if(data.length > 0) {
-    			// Parse the XML into JS objects
-				parser.parseString(data, function(err, result) {
+		console.log('Parsing taxonomy file to js objects');
+		xmlRepository.getTaxonomyXml(function(xmlTaxonomy) {
+			if(xmlTaxonomy.length > 0) {
+				// Parse the XML into JS objects
+				parser.parseString(xmlTaxonomy, function(err, result) {
 					if(err) {
-		            	console.error('Error parsing taxonomies: ' + err);
+		            	console.error(err);
+						throw new Error('Unable to parse file: ' + taxonomyXml); 
 					} else {
 						addTaxonomyObjectsToDestinations(result, null, sendResponse);	
 					}
 				});
 			}
+			
 		});
 	}
 
 	function parseDestinations(sendResponse) {
 		var parser = new xml2js.Parser();
-		console.log('Trying to parse destinations file to js objects: ' + destinationsXml);
-		fs.readFile(destinationsXml, function(err, data) {
-			if(err){
-				console.error('Destinations file error: ' + err);
-				throw new Error('Unable to find file: ' + destinationsXml); 
-			} else if(data.length > 0) {
-  			// Parse the XML into JS objects
-				parser.parseString(data, function(err, result) {
+		console.log('Parsing destinations to js objects');
+		xmlRepository.getDestinationsXml(function(xmlDestinations){	
+			if(xmlDestinations.length > 0) {
+				// Parse the XML into JS objects
+				parser.parseString(xmlDestinations, function(err, result) {
 					if(err) {
 	                	console.error(err);
 						throw new Error('Unable to parse file: ' + destinationsXml); 
-	        		} else if(data.length > 0){
-						convertJsObjectsToDestinations(result, sendResponse);	
-					}
+	        		} 
+
+					convertJsObjectsToDestinations(result, sendResponse);	
 				});
 			}
 		});
@@ -181,13 +174,12 @@ function newParser(taxonomyXml, destinationsXml, outputDir) {
 			parseDestinations(function(destinations) {
 				// Add taxonomies to destination objects
 				parseTaxonomies(function(completedDestinations) {
-					pageMaker = newPageMaker(outputDir);
+					console.log('Parsing Destinations to .html files...');
 					pageMaker.makeDestinationPages(completedDestinations, function(finished){
 						while(!finished){};
 						var endDate = new Date();
 						console.log();
 						console.log('Parsing ended: ' + endDate);
-						console.log('Time taken in ms: ' + (new Date(endDate - startDate).getMilliseconds()));
 					});
 				});
 			});

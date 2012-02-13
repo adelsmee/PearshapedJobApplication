@@ -2,7 +2,7 @@ This is my attempt at parsing the Lonely Planet XML into a series of web pages. 
 
 To run from the command line cd to the root directory of the application:
 
-node bin/lonely-planet.js <taxonomyfile> <destinationfile> <outputdirectory>
+node bin/lonely-planet.js taxonomyfile destinationfile outputdirectory
 
 * All paths should be relative to the root directory of the application.
 

@@ -1,9 +1,10 @@
-//Copyright 2009, 2010, 2011 Isaac Z. Schlueter.
-//All rights reserved.
+// Copyright 2009, 2010, 2011 Isaac Z. Schlueter.
+// All rights reserved.
 // this keeps a queue of opened file descriptors, and will make
 // fs operations wait until some have closed before trying to open more.
 
-var fs = require("fs")
+var fs = require("fs"),
+    config = require('./config');
 
 // there is such a thing as TOO graceful.
 if (fs.open === gracefulOpen) return
@@ -18,7 +19,7 @@ exports = module.exports = fs
 
 
 fs.MIN_MAX_OPEN = 64
-fs.MAX_OPEN = 222
+fs.MAX_OPEN = config.performance.numberOfConcurrentFileOperations;
 
 var originalOpen = fs.open
   , originalOpenSync = fs.openSync

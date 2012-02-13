@@ -1,13 +1,18 @@
 // Test the Parser
 var newParser = require('../src/parser.js');
-var newUtility = require('../src/utility.js');
+var newXmlRepository = require('../src/xml-repository.js');
+var newPageMaker = require('../src/page-maker.js');
+var config = require('../src/config.js');
 
 describe('Parser', function () {  
-	var parser, utility, destinations, getDestinations;
+	var parser, 
+		destinations, 
+		getDestinations;
+		xmlRepository = newXmlRepository('data/taxonomy.xml', 'data/destinations.xml'),
+		pageMaker = newPageMaker('test-output/');
 
 	beforeEach(function() {
-		parser = newParser('data/taxonomy.xml', 'data/destinations.xml', 'testwastage/');
-		utility = newUtility();
+		parser = newParser(xmlRepository, pageMaker);
 	
 		getDestinations = function(testDestinations) {
 			destinations = testDestinations;
@@ -119,7 +124,6 @@ describe('Parser', function () {
 			for (name in destinations) {
 				expect(destinations[name].atlas_id).toBeDefined();  
 			}
-console.log(JSON.stringify(destinations));
 		});
 	});  
 
@@ -136,7 +140,7 @@ console.log(JSON.stringify(destinations));
 			expect(destinations['355633']).toBeDefined();
 			for (name in destinations) {
 				var ignoreProperties;
-				for (ignoreProperties in utility.getIgnorePropertyNames()) {
+				for (ignoreProperties in config.xml.ignorePropertyNames) {
 					// Properties to ignore
 					expect(destinations[name][ignoreProperties]).toBeUndefined();  
 				}
@@ -162,15 +166,12 @@ console.log(JSON.stringify(destinations));
 			for (name in destinations) {
 				// Just test Africa then return as not all the rest have all these properties
 				for (i = 0 ; i < propertyNames.length ; i++) {
-					// if(propertyNames[i] === 'contents') {
-					// 	var j;
-					// 	for (j = 0 ; j < contentsPropertyNames.length ; j++)
-					// 	{
-					// 		expect(destinations[name][propertyNames[i]][contentsPropertyNames[j]]).toBeDefined();
-					// 	}
-					// } else {
+					if(propertyNames[i] === 'contents') {
+						// Make sure all contents sections have been added
+ 						expect(destinations[name][propertyNames[i]].length).toEqual(6);
+					} else {
 						expect(destinations[name][propertyNames[i]]).toBeDefined();
-					// }
+					}
 				}
 				return;
 			}

@@ -5,13 +5,18 @@
 function newPlanet() {
 	// Includes
 	var newParser = require('../src/parser.js'),
+		newXmlRepository = require('../src/xml-repository.js'),
+		newPageMaker = require('../src/page-maker.js'),
 	// Arguments: taxonomy file, destination file, output directory
 	// Ignore first two arguments as they are loc of node and current file
 	planetArgs = process.argv.splice(2);
 
 	return {
 		parseXML: function(){
-			var parser = newParser(planetArgs[0], planetArgs[1], planetArgs[2]);
+			var xmlRepository = newXmlRepository(planetArgs[0], planetArgs[1]),
+				pageMaker = newPageMaker(planetArgs[2]);
+				parser = newParser(xmlRepository, pageMaker);
+			
 			parser.parseXml2Html();
 		}
 
