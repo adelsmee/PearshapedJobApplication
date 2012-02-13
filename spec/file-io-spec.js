@@ -21,9 +21,9 @@ describe('FileIo', function () {
 	});  
 
 	it('should copy file', function(){
-		var fileToCopy = 'data/css/all.css';
-		var filesCopied = false;
-		var copyComplete = function(done){
+		var fileToCopy = 'data/css/all.css',
+			filesCopied = false,
+			copyComplete = function(done){
 			filesCopied = done;
 		};
 
@@ -39,6 +39,32 @@ describe('FileIo', function () {
 		});
 	});
 
+	// Once again, could not get toThrow() matcher to work
+	it('should throw exception if file to copy does not exist', function(){
+		// var fileToCopy = 'foo';
+		// var filesCopied = false;
+		// var copyComplete = function(done){
+		// 	filesCopied = done;
+		// };
+
+		// expect(function() {
+		// 	fileIo.copyFile(fileToCopy, copyDestination, copyComplete);
+		// 	}).toThrow(new Error('Error reading file: foo'));
+	});
+
+	// Once again, could not get toThrow() matcher to work
+	it('should throw exception if directory to copy to does not exist', function(){
+		// var fileToCopy = 'data/css/all.css';
+		// copyDestination = 'unknownDir/unknownDir/foo',
+		// var filesCopied = false;
+		// var copyComplete = function(done){
+		// 	filesCopied = done;
+		// };
+
+		// expect(function() {
+		// 	fileIo.copyFile(fileToCopy, copyDestination, copyComplete);
+		// 	}).toThrow(new Error('Error writing file: unknownDir/unknownDir/foo'));
+	});
 
 	//Test one method from the fs module just to make sure the code extends it properly
 	it('should read file using fs', function(){

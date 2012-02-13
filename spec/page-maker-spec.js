@@ -6,9 +6,12 @@ describe('PageMaker', function () {
 		fs = require('fs'),
 		config = require('../src/config.js'),
 		destinationsJson = 'spec/test-destinations.json',
-		outputFolder = 'testpagemakeroutput/',
+		outputFolder = 'spec/test-output/',
 		path = require('path'),
-		finished = function(doneMakingPages){};
+		isFinished = false,
+		notifyFinished = function(doneMakingPages){
+			isFinished = doneMakingPages;
+		};
 
 	beforeEach(function() {
 		pageMaker = newPageMaker(outputFolder);
@@ -22,11 +25,15 @@ describe('PageMaker', function () {
 		}	
 	});
 
+	afterEach(function() {
+		isFinished = false;
+	});
+
 	it('should make destination pages', function () {
-		pageMaker.makeDestinationPages(destinations, finished);
+		pageMaker.makeDestinationPages(destinations, notifyFinished);
 
 		waitsFor(function() {
-			return finished;
+			return isFinished;
 		}, "It took too long to make pages.", 10000);
 
 		runs(function() {

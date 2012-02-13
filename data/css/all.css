@@ -90,6 +90,14 @@ body {
   padding:10px;
 }
 
+#navigation ul li {
+  list-style-type: none;
+}
+
+#navigation ul li.parent {
+  
+}
+
 #wrapper {
   padding-top: 20px;
 }

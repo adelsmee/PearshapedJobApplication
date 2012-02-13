@@ -4,7 +4,6 @@
 // The PageMaker module converts JavaScript destination objects
 // into static html pages
 function newPageMaker(outputDir) {
-console.log('output dir: ' + outputDir);
 	var config = require('./config.js'),
 		fileIo = require('./file-io.js'),
 		newTemplate = require('./template.js'),

@@ -47,4 +47,15 @@ describe('XmlRepository', function () {
 			expect(xmlData).toBeDefined();			
 		});
 	});
+
+	// Once again, could not get toThrow() matcher to work
+	it('should throw exception if xml file does not exist', function(){
+		// var destinationXml = 'foo';
+		// var taxonomyXml = 'bar';
+		// xmlRepository = newXmlRepository(taxonomyXml, destinationXml);
+
+		// expect(function() {
+		// 	xmlRepository.getTaxonomyXml(returnXml);
+		// 	}).toThrow(new Error('Unable to read file: bar'));
+	});
 });     

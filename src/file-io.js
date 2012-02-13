@@ -8,14 +8,14 @@ fs.copyFile = copyFile;
 function copyFile(oldFile, newFile, copyComplete) {
 	fs.readFile(oldFile, function (err, data) {
 			if (err) {
-				console.error('Error reading file: ' + oldFile);
-				throw err;	
+				console.error(err);
+				throw new Error('Error reading file: ' + oldFile);	
 			} 
 
 		fs.writeFile(newFile, data, function (err) {
 			if (err) {
-				console.error('Error writing file: ' + newFile);
-				throw err;
+				console.error(err);
+				throw new Error('Error writing file: ' + newFile);
 			}
 
 			if(copyComplete){

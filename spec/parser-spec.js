@@ -3,13 +3,14 @@ var newParser = require('../src/parser.js');
 var newXmlRepository = require('../src/xml-repository.js');
 var newPageMaker = require('../src/page-maker.js');
 var config = require('../src/config.js');
+var fs = require('../src/file-io.js');
 
 describe('Parser', function () {  
 	var parser, 
 		destinations, 
 		getDestinations;
 		xmlRepository = newXmlRepository('data/taxonomy.xml', 'data/destinations.xml'),
-		pageMaker = newPageMaker('test-output/');
+		pageMaker = newPageMaker('spec/test-output/');
 
 	beforeEach(function() {
 		parser = newParser(xmlRepository, pageMaker);
@@ -27,9 +28,21 @@ describe('Parser', function () {
 		expect(parser).toBeDefined();  
 	});  
 
-	it('should parse Xml2Html', function () {
-	  	expect(parser.parseXml2Html()).toEqual();  
-	});  
+	it('should parse xml into html', function(){
+		parser.parseXml2Html();
+
+		waitsFor(function() {
+			return parser.getAllTaxonomiesAdded();
+		}, "It took too long to add taxonomies.", 10000);
+
+
+		runs(function() {
+			var dirContents = fs.readdirSync('spec/test-output/');
+			// The number of destinations plus the css folder
+			var numberOfDestinations = Object.keys(destinations).length + 1;
+			expect(dirContents.length).toEqual(numberOfDestinations);  
+		});		
+	})
 
 	it('should parse all taxonomies', function() {
 		parser.parseTaxonomies(getDestinations);
