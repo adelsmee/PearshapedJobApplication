@@ -34,47 +34,46 @@ function newPageMaker(outputDir) {
 		var jsdom = require('jsdom');
 		// Store the template in the jquery object for manipulation
 		var data = template.pageHtml();
+		var jquery = fileIo.readFileSync("node_modules/jquery-1.7.1.min.js").toString();
 
 		jsdom.env({
 			html: data,
-			scripts: [
-				'http://code.jquery.com/jquery-1.5.min.js',
-			]
-		}, function (err, window) {
-			var $ = window.jQuery;
-			var destinationId;
-			var pageCounter = 0;
-			var totalDestinations = Object.keys(destinations).length;
+			src: [jquery],
+			done: function (err, window) {
+				var $ = window.$;
+				var destinationId;
+				var pageCounter = 0;
+				var totalDestinations = Object.keys(destinations).length;
 
-			for(destinationId in destinations){
-				var destinationFilePath = '',
-					pageContents = '',
-					destination = {};
-					destination = destinations[destinationId];
+				for(destinationId in destinations){
+					var destinationFilePath = '',
+						pageContents = '',
+						destination = {};
+						destination = destinations[destinationId];
 
-				// Now document is loaded can traverse the DOM using JQuery, 
-				$(template.titleClass).text(destination.title);
-				var navigationHtml = makePageNavigation(destination);
-				$(template.navigationDivId).html(navigationHtml);
-	  			
-	  			// Add content
-	  			if(destination.contents) {
-	  				pageContents = makePageContents(destination.contents);
-					$(template.contentTextDivId).html(pageContents);
-	  			}
+					// Now document is loaded can traverse the DOM using JQuery, 
+					$(template.titleClass).text(destination.title);
+					var navigationHtml = makePageNavigation(destination);
+					$(template.navigationDivId).html(navigationHtml);
+		  			
+		  			// Add content
+		  			if(destination.contents) {
+		  				pageContents = makePageContents(destination.contents);
+						$(template.contentTextDivId).html(pageContents);
+		  			}
 
-	  			// Append header and footer tags
-	  			var destinationFileContents = util.format(template.page, $('html').html());
-				destinationFilePath = outputDir + formatDestinationNameAsHtmlFilename(destination.title);
-				
+		  			// Append header and footer tags
+		  			var destinationFileContents = util.format(template.page, $('html').html());
+					destinationFilePath = outputDir + formatDestinationNameAsHtmlFilename(destination.title);
+					
+					savePage(destinationFilePath, destinationFileContents, function(){
+						pageCounter++;
 
-				savePage(destinationFilePath, destinationFileContents, function(){
-					pageCounter++;
-
-					if(pageCounter === totalDestinations){
-						finished(true);
-					}
-				})
+						if(pageCounter === totalDestinations){
+							finished(true);
+						}
+					})
+				}
 			}
 		});
 	}
@@ -82,7 +81,7 @@ function newPageMaker(outputDir) {
 	function savePage(saveDestination, contents, pageSaved) {
 		fileIo.writeFile(saveDestination, contents, function(err){
 			if(err){
-				console.log('could not write to file: ' + destinationFilePath);
+				console.log('could not write to file: ' + saveDestination);
 				throw err;
 			}
 

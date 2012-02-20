@@ -120,7 +120,6 @@ function newParser(xmlRepository, pageMaker) {
 
 		if(numberOfObjectsToConvert === 0) {
 			console.log('Taxonomy parsed to js objects');	
-			// For testing
 			sendResponse(destinations);
 			allTaxonomiesAdded = true;
 		}
