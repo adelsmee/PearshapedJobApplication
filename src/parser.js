@@ -1,7 +1,7 @@
 // Parser.js 1.0
 // (c) 2012 Adel Smee, Pearshaped Development Inc.
 
-// The Parser that reads raw XML in from a file and produces HTML files.
+// The Parser that reads raw XML and produces HTML files.
 function newParser(xmlRepository, pageMaker) {
 	var xml2js = require('xml2js'),
 		util = require('util'),

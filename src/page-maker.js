@@ -92,7 +92,7 @@ function newPageMaker(outputDir) {
 	function makePageNavigation(destination) {	
 		var navigationHtml,
 			links = [];  			
-		// Add parent navigation
+		// Add parent and current navigation
 		if(destination.parentDestination && destination.parentDestination.title){
 			links.push(util.format(	template.listLink,
 										 	'parent',  
