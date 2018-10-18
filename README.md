@@ -1,5 +1,5 @@
 
-This is my attempt at parsing the Lonely Planet XML into a series of web pages. LonelyPlanetCodingExercise is a command-line application that runs in Node.js 
+This is my attempt at parsing the Lonely Planet XML into a series of web pages. LonelyPlanetCodingExercise is a command-line application that runs in Node.js flurg blop missen dupa
 
 ====================================================================
 RUN
